@@ -17,7 +17,7 @@
   
 #### 4-Data Cleaning
   
-#### 5-Project Schema: Production & Purchasing Focus
+#### 5-Data Modeling
 
 #### 6-Data Analysis & Insights
 
@@ -36,8 +36,10 @@
 This project aims to analyze production and purchasing efficiency, identify bottlenecks, and improve overall supply chain and operational efficiency for Adventure Works.
 
 - **Tools Used:**
-    - **SQL** for data extraction and analysis.
-    - **Power BI** for data visualization and dashboard creation.
+    - **SQL Server:** For data extraction and joining multiple tables
+    - **Power BI:** For data analysis, building the data model, creating relationships, and generating insights.
+    - **Excel:** For initial data exploration, anomaly detection, and data quality checks.
+
       
 - **Key Objectives:**
     - Analyze production performance and identify delays.
@@ -50,13 +52,17 @@ This project aims to analyze production and purchasing efficiency, identify bott
 
 AdventureWorks is a comprehensive dataset for a fictional company manufacturing bicycles and related products. Our project focuses on the **Production** and **Purchasing** schemas, covering production workflows, components, orders, and procurement.
 
-## 3. Data Exploration with SQL
+## 3. Data Exploration & Transformation with SQL
 
-We used several SQL queries to extract and analyze data relevant to production and purchasing. Here are the key queries with explanations and code snippets.
+- **Exploration:**
+Data was extracted from the **AdventureWorks** database using SQL queries to target key tables within multiple schemas, primarily **Production** and **Purchasing**. Over **30 tables** were integrated across these schemas through SQL queries, producing **six key tables** used for the analysis.
 
- - **Query 1:** Production Workflow Analysis
+- **Schemas Used:** Production, Purchasing
 
-   - **Purpose:** Extracts work order data within a specified timeframe to assess production delays and efficiencies.
+- **Transformation Process:**
+Multiple SQL queries were designed to integrate data from various tables, creating a unified dataset for deeper analysis in Power BI. Below is a summary of each query used in the process:
+
+ - **Query 1:** Production and Work Order Data Extraction
 
 ```sql
 
@@ -113,12 +119,12 @@ WHERE
     AND W.ScheduledStartDate > '2011-01-01' 
     AND W.ActualEndDate < '2014-12-31';      
 ```
-  **Insight:** This query helped identify major delays and bottlenecks in the production workflow.
+ **Purpose:** Extracts production and work order data with additional latency calculations for scheduling and actual resource hours, enabling analysis of production delays.
+ 
+ **Details:** This query pulls data from various related tables, including **WorkOrderRouting**, **Product**, **Location**, and **ScrapReason**, joining them to get a full view of work orders, product categories, and any scrap reasons.
 
-- **Query 2:** Production Efficiency
+- **Query 2:** Work Order Scheduling and Actual Start/End Dates Analysis
   
-  - **Purpose:** Measures the efficiency by comparing scheduled and actual timelines, factoring in resource hours.
-
 ```sql
 SELECT
     w.ProductID,
@@ -160,10 +166,11 @@ WHERE
     AND W.ScheduledStartDate > '2011-01-01' 
     AND W.ActualEndDate < '2014-12-31'
 ```
-**Insight:** Uncovered inefficiencies in scheduling and highlighted areas where improvements could reduce delays.
+**Purpose:** Focuses on capturing the start and end dates for work orders and calculates latency in days.
 
-- **Query 3:** Product Catalog Analysis
-   - **Purpose:** Gathers detailed product information, including categories and pricing, for inventory and sales analysis.
+**Details:** This query specifically examines scheduling vs. actual dates for work orders to identify delays and calculate the resource hours affected by these delays.
+
+- **Query 3:** Product Details Extraction
 
 ```sql
 SELECT 
@@ -185,25 +192,138 @@ LEFT JOIN
 LEFT JOIN 
     Production.ProductCategory AS pc ON psc.ProductCategoryID = pc.ProductCategoryID;
 ```
-**Insight:** Helped management understand product composition and organize the catalog efficiently.
+ **Purpose:** Extracts product details, including category and subcategory information.
+ 
+ **Details:** This query joins Product, ProductSubcategory, and ProductCategory tables to retrieve product-related information, such as cost, pricing, and categorization.
 
-- **Query 4:** Product Structure Analysis
-   - **Purpose:** Structures data for analysis of products, categorized by subcategories and components.
-  
+- **Query 4:** Purchase Order and Employee Details
+
+```sql
+SELECT 
+    pod.PurchaseOrderID,
+    p.BusinessEntityID,
+    p.FirstName + ' ' + p.LastName AS EmployeeName,
+    e.JobTitle,
+    v.BusinessEntityID AS VendorBusinessEntityID,
+    v.Name AS VendorName,
+    sm.Name AS ShipMethodName,
+    poh.OrderDate,
+    YEAR(poh.OrderDate) AS OrderYear,
+    MONTH(poh.OrderDate) AS OrderMonth,
+    DAY(poh.OrderDate) AS OrderDay,
+    poh.ShipDate,
+    YEAR(poh.ShipDate) AS ShipYear,
+    MONTH(poh.ShipDate) AS ShipMonth,
+    DAY(poh.ShipDate) AS ShipDay,
+    pod.DueDate,
+    YEAR(pod.DueDate) AS DueYear,
+    MONTH(pod.DueDate) AS DueMonth,
+    DAY(pod.DueDate) AS DueDay,
+    DATEDIFF(DAY, poh.ShipDate, pod.DueDate) AS shipped_dates,
+    poh.SubTotal,
+    poh.TaxAmt,
+    poh.Freight,
+    poh.TotalDue
+FROM 
+    Purchasing.PurchaseOrderDetail AS pod
+JOIN 
+    Purchasing.PurchaseOrderHeader AS poh ON pod.PurchaseOrderID = poh.PurchaseOrderID
+JOIN 
+    Person.Person AS p ON poh.EmployeeID = p.BusinessEntityID
+JOIN 
+    Purchasing.Vendor AS v ON poh.VendorID = v.BusinessEntityID
+JOIN 
+    HumanResources.Employee AS e ON p.BusinessEntityID = e.BusinessEntityID
+JOIN
+    Purchasing.ShipMethod AS sm ON poh.ShipMethodID = sm.ShipMethodID
+GROUP BY 
+    pod.PurchaseOrderID,
+    p.BusinessEntityID,
+    p.FirstName,
+    p.LastName,
+    e.JobTitle,
+    v.BusinessEntityID,
+    v.Name,
+    sm.Name,
+    poh.OrderDate,
+    poh.ShipDate,
+    pod.DueDate,
+    poh.SubTotal,
+    poh.TaxAmt,
+    poh.Freight,
+    poh.TotalDue
+```
+ **Purpose:** Retrieves data on purchase orders, employees, vendors, and shipping details.
+ 
+ **Details:** Joins **PurchaseOrderDetail**, **PurchaseOrderHeader**, and other relevant tables to get a comprehensive view of each purchase order’s details, including dates and cost breakdowns.
+
+- **Query 5:** Purchase Order Quantity and Cost Analysis
+
+```sql
+SELECT 
+    pod.PurchaseOrderID,
+    pod.ProductID,
+    pod.UnitPrice,
+    pod.OrderQty,
+    pod.LineTotal,
+    pod.ReceivedQty,
+    CASE 
+        WHEN pod.ReceivedQty > 0 THEN pod.ReceivedQty * pod.UnitPrice 
+        ELSE 0 
+    END AS ReceivedTotal,
+    CASE 
+        WHEN pod.ReceivedQty > 0 THEN (pod.OrderQty - pod.ReceivedQty) * pod.UnitPrice 
+        ELSE 0 
+    END AS DifflineRec,
+    pod.RejectedQty,
+    CASE 
+        WHEN pod.RejectedQty > 0 THEN pod.RejectedQty * pod.UnitPrice 
+        ELSE 0 
+    END AS RejectedTotal,
+    pod.StockedQty,
+    CASE 
+        WHEN pod.StockedQty > 0 THEN pod.StockedQty * pod.UnitPrice 
+        ELSE 0 
+    END AS StockedTotal,
+    CASE 
+        WHEN pod.StockedQty > 0 and pod.StockedQty != (pod.ReceivedQty-pod.RejectedQty) THEN (pod.ReceivedQty - pod.StockedQty) * pod.UnitPrice 
+        ELSE 0 
+    END AS DifflineStock,
+    p.BusinessEntityID,
+    p.FirstName + ' ' + p.LastName AS EmployeeName,
+    v.BusinessEntityID,
+    v.Name,
+    e.JobTitle
+FROM 
+    Purchasing.PurchaseOrderDetail AS pod
+JOIN 
+    Purchasing.PurchaseOrderHeader AS poh ON pod.PurchaseOrderID = poh.PurchaseOrderID
+JOIN 
+    Person.Person AS p ON poh.EmployeeID = p.BusinessEntityID
+JOIN 
+    Purchasing.Vendor AS v ON poh.VendorID = v.BusinessEntityID
+JOIN 
+    HumanResources.Employee AS e ON p.BusinessEntityID = e.BusinessEntityID;
+```
+ **Purpose:** Examines quantities and costs associated with purchase orders.
+ 
+ **Details:** Calculates totals for received, rejected, and stocked quantities with respective unit prices to help track costs per order.
+
+ - **Query 6:** Bill of Materials Analysis
+
 ```sql
 SELECT 
     BOM.ComponentID,
     P.Name AS ComponentName,
-	P.MakeFlag,
     BOM.ProductAssemblyID,
     PL.Name AS ProductAssemblyName
 FROM 
     Production.BillOfMaterials AS BOM
 JOIN 
-    Production.Product AS P ON P.ProductID = BOM.ComponentID
-LEFT OUTER JOIN 
-    Production.Product AS PL ON PL.ProductID = BOM.ProductAssemblyID;
-```
-
-
-
+    Production.Product AS P ON BOM.ComponentID = P.ProductID
+JOIN 
+    Production.Product AS PL ON BOM.ProductAssemblyID = PL.ProductID;
+  ```
+ **Purpose:** Retrieves details about the bill of materials for each component and its assembly.
+ 
+ **Details:** BillOfMaterials and Product tables to show how each component is part of a larger product assembly.
