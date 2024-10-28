@@ -6,14 +6,14 @@
 
 #### 2-AdventureWorks Dataset Overview
 
-#### 3-Data Exploration with SQL
+#### 3-Data Exploration & Transformation with SQL
 
- - Query 1: Production Workflow Analysis
- - Query 2: Production Efficiency
- - Query 3: Product Catalog Analysis
- - Query 4: Product Structure Analysis
- - Query 5: Purchase Order Breakdown
- - Query 6: Component and Assembly Analysis
+ - Query 1: Production and Work Order Data Extraction
+ - Query 2: Work Order Scheduling and Actual Start/End Dates Analysis
+ - Query 3: Product Details Extraction
+ - Query 4: Purchase Order and Employee Details
+ - Query 5: Purchase Order Quantity and Cost Analysis
+ - Query 6: Bill of Materials Analysis
   
 #### 4-Data Cleaning
   
@@ -327,3 +327,22 @@ JOIN
  **Purpose:** Retrieves details about the bill of materials for each component and its assembly.
  
  **Details:** BillOfMaterials and Product tables to show how each component is part of a larger product assembly.
+
+## 4-Data Cleaning
+
+Data cleaning was conducted using SQL and Excel, focusing on:
+
+- **Detecting and removing anomalies to improve data quality.**
+- **Retaining Null values where they signify meaningful missing information, which was relevant for analysis purposes.**
+
+## 5-Data Modeling
+
+Data modeling was conducted in Power BI, establishing relationships between tables to ensure data integrity and enable comprehensive analysis:
+
+- **Primary Relationships:** Key relationships were created between tables by mapping primary keys and foreign keys, allowing coherent navigation across production and purchasing data.
+
+- **Broken Relationships:** During model construction, certain relationships required adjustments to ensure compatibility. This was achieved through remapping and restructuring fields as needed.
+
+- **Schema Focus:** The model includes selected tables from the Production and Purchasing schemas only, aligned with the project’s goals by focusing on relevant data for effective analysis.
+
+- **Data Integration:** Relationships were carefully adjusted to maintain compatibility, and fields were remapped where necessary to facilitate seamless navigation across tables such as Procurement and Shipping, Product Components, and Work Order Performance.
