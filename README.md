@@ -15,7 +15,7 @@
  - **Query 5:** Purchase Order Quantity and Cost Analysis
  - **Query 6:** Bill of Materials Analysis
   
-## [4-Data Cleaning](#4-data-cleaning)
+#### [4-Data Cleaning](#4-data-cleaning)
 
 #### [5-Data Modeling](#5-data-modeling)
 
