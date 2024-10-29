@@ -2,34 +2,34 @@
 
 ## Table of Contents
 
-#### 1-Introduction
+#### [1-Introduction](#1-introduction)
 
-#### 2-AdventureWorks Dataset Overview
+#### [2-AdventureWorks Dataset Overview](#2-adventureworks-dataset-overview)
 
-#### 3-Data Exploration & Transformation with SQL
+#### [3-Data Exploration & Transformation with SQL](#3-data-exploration--transformation-with-sql)
 
- - Query 1: Production and Work Order Data Extraction
- - Query 2: Work Order Scheduling and Actual Start/End Dates Analysis
- - Query 3: Product Details Extraction
- - Query 4: Purchase Order and Employee Details
- - Query 5: Purchase Order Quantity and Cost Analysis
- - Query 6: Bill of Materials Analysis
+ - **Query 1:** Production and Work Order Data Extraction
+ - **Query 2:** Work Order Scheduling and Actual Start/End Dates Analysis
+ - **Query 3:** Product Details Extraction
+ - **Query 4:** Purchase Order and Employee Details
+ - **Query 5:** Purchase Order Quantity and Cost Analysis
+ - **Query 6:** Bill of Materials Analysis
   
-#### 4-Data Cleaning
-  
-#### 5-Data Modeling
+#### [4-Data Cleaning](#4-data-cleaning)
 
-#### 6-Data Analysis & Insights
+#### [5-Data Modeling](#5-data-modeling)
 
-#### 7-Dashboard Overview
+#### [6-Data Analysis & Insights](#6-data-analysis--insights)
 
-#### 8-Challenges Faced
+#### [7-Dashboard Overview](#7-dashboard-overview)
 
-#### 9-Future Work
+#### [8-Challenges Faced](#8-challenges-faced)
 
-#### 10-Recommendations
+#### [9-Future Work](#9-future-work)
 
-#### 11-Conclusion
+#### [10-Recommendations](#10-recommendations)
+
+#### [11-Conclusion](#11-conclusion)
 
 ## 1. Introduction
 
@@ -346,3 +346,64 @@ Data modeling was conducted in Power BI, establishing relationships between tabl
 - **Schema Focus:** The model includes selected tables from the Production and Purchasing schemas only, aligned with the project’s goals by focusing on relevant data for effective analysis.
 
 - **Data Integration:** Relationships were carefully adjusted to maintain compatibility, and fields were remapped where necessary to facilitate seamless navigation across tables such as Procurement and Shipping, Product Components, and Work Order Performance.
+
+## 6. Data Analysis & Insights
+Key insights from the data analysis include:
+
+- **Shipping Performance by Carrier:** Examines costs by carrier before and after taxes.
+- **Ratio of Finished Goods:** Calculates finished goods versus in-progress goods.
+- **Scrap Rates for Products:** Identifies products with high scrap quantities.
+- **Shipping Delays:** Highlights products causing significant shipping delays.
+- **Final Price per Unit:** Evaluates costs across product categories after taxes.
+- **In-house vs. External Production:** Assesses the balance of in-house and externally purchased products.
+- **Top Vendors:** Lists top vendors by supply quantities.
+
+## 7. Dashboard Overview
+The Power BI dashboard provides a comprehensive visual overview of key performance indicators (KPIs) related to production, purchasing, shipping, and work orders. This primary dashboard summarizes the most critical KPIs from the six tables used in the analysis.
+
+<img width="900" alt="image" src="https://github.com/user-attachments/assets/273b94f5-a82f-4a3e-b623-12438157d8df">
+
+
+The additional six dashboards, covering detailed analyses for each specific area, are included in a separate PDF file within the repository.
+
+- **Detailed Dashboards in PDF:**
+  
+- **Work Order Performance:** Visualizes production efficiency, scrap rates, and time management metrics.
+  
+- **Purchase Order and Stock:** Analyzes stock levels, costs, and employee performance in inventory management.
+  
+- **Procurement and Shipping Performance:** Provides insights into carrier performance and cost efficiency.
+  
+- **Product Overview:** Offers a breakdown of product metrics, costs, and category distributions.
+  
+- **Production Efficiency:** Highlights key metrics for operational efficiency, including resource utilization and delays.
+  
+- **Product Components and Assembly:** Examines component utilization, assembly efficiency, and in-house versus external sourcing.
+  
+Each dashboard in the PDF focuses on a different aspect of operational performance, providing deeper insights to support strategic decision-making.
+
+## 8. Challenges Faced
+Key challenges during the project included:
+
+- **Data Cleaning:** Managing outliers and inconsistencies in shipping and production data.
+  
+- **Schema Complexity:** Navigating complex relationships between tables.
+  
+- **Integration in Power BI:** Broken links during data modeling required significant adjustments.
+
+## 9. Future Work
+For future improvements:
+
+- **Enhanced Analysis:** Explore machine learning for predictive insights.
+- **Optimization:** Use more advanced statistical methods to enhance accuracy in production forecasts.
+- **Expanded Data Integration:** Integrate additional schemas for a more comprehensive analysis.
+
+## 10. Recommendations
+Based on the analysis, the following steps are suggested:
+
+- **Reduce Scrap Rates:** Investigate high scrap products and implement quality control measures.
+- **Optimize Shipping:** Reevaluate carrier contracts to lower costs.
+- **Security Enhancement:** Implement stronger measures to reduce inventory theft.
+
+## 11. Conclusion
+The project uncovered valuable insights into production inefficiencies and potential cost-saving opportunities. Enhancing data-driven strategies could improve Adventure Works' operational efficiency and streamline production.
